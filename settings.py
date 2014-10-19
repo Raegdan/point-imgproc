@@ -4,8 +4,8 @@ libs = ['/home/point/point/lib']
 
 domain = 'point.im'
 
-imgproc_socket = 'unix:///var/run/redis/imgproc.sock'
-cache_socket = 'unix:///var/run/redis/cache.sock'
+imgproc_socket = 'tcp://127.0.0.1:16379'
+cache_socket = 'tcp://127.0.0.1:16380'
 
 queue_timeout = 5
 
