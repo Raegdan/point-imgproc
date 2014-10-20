@@ -1,6 +1,6 @@
 workers = 8
 
-libs = ['/home/point/point/lib']
+libs = ['/home/point/core/lib']
 
 domain = 'point.im'
 
@@ -11,14 +11,14 @@ queue_timeout = 5
 
 cache_expire_max = 86400
 
-avatars_path = '/home/point/point/www/static/img/a'
-avatars_root = 'http://point.im/img/a'
+avatars_path = '/home/point/img/a'
+avatars_root = 'http://i.point.im/a'
 avatar_sizes = [24, 40, 80, 280]
 
-thumbnail_path = '/home/point/point/www/static/img/t'
+thumbnail_path = '/home/point/img/t'
 thumbnail_size = [400, 300]
 
-media_path = '/home/point/point/www/static/img/m'
+media_path = '/home/point/img/m'
 media_root = '://i.point.im/m'
 media_size = [1920, 1080]
 
