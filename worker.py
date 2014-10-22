@@ -22,6 +22,20 @@ _ROTATE = {
     8: 90
 }
 
+def _rotate(img):
+    exif = {
+        TAGS[k]: v
+        for k, v in img._getexif().items()
+        if k in TAGS
+    }
+
+    try:
+        img = img.rotate(_ROTATE[exif['Orientation']])
+    except KeyError:
+        pass
+
+    return img
+
 class ImgprocWorker(object):
     proctitle('imgproc-worker')
     def __init__(self):
@@ -143,7 +157,10 @@ def thumbnail(url):
 
         fmt = img.format
 
-        if fmt == 'GIF':
+        if fmt == 'JPEG':
+            img = _rotate(img)
+
+        elif fmt == 'GIF':
             img.seek(0)
             #img = img.copy()
 
@@ -174,16 +191,7 @@ def _attach_image(src, dest, filename):
         fmt = img.format
 
         if fmt == 'JPEG':
-            exif = {
-                TAGS[k]: v
-                for k, v in img._getexif().items()
-                if k in TAGS
-            }
-
-            try:
-                img = img.rotate(_ROTATE[exif['Orientation']])
-            except KeyError:
-                pass
+            img = _rotate(img)
 
         elif fmt == 'GIF':
             img.seek(0)
