@@ -23,16 +23,19 @@ _ROTATE = {
 }
 
 def _rotate(img):
-    exif = {
-        TAGS[k]: v
-        for k, v in img._getexif().items()
-        if k in TAGS
-    }
+    try:
+        exif = {
+            TAGS[k]: v
+            for k, v in img._getexif().items()
+            if k in TAGS
+        }
+    except AttributeError:
+        return img
 
     try:
         img = img.rotate(_ROTATE[exif['Orientation']])
     except KeyError:
-        pass
+        return img
 
     return img
 
