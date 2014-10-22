@@ -6,6 +6,7 @@ import shutil
 import urllib2
 import magic
 import Image
+from PIL.ExifTags import TAGS
 from cStringIO import StringIO
 from hashlib import md5
 from random import randint
@@ -14,6 +15,12 @@ from geweb import log
 from point.util import proctitle, cache_get, cache_store, cache_del
 
 import settings
+
+_ROTATE = {
+    3: 180,
+    6: -90,
+    8: 90
+}
 
 class ImgprocWorker(object):
     proctitle('imgproc-worker')
@@ -164,16 +171,28 @@ def _attach_image(src, dest, filename):
         img = Image.open(fd)
         img.load()
 
+        fmt = img.format
+
+        if fmt == 'JPEG':
+            exif = {
+                TAGS[k]: v
+                for k, v in img._getexif().items()
+                if k in TAGS
+            }
+
+            try:
+                img = img.rotate(_ROTATE[exif['Orientation']])
+            except KeyError:
+                pass
+
+        elif fmt == 'GIF':
+            img.seek(0)
+
         if orig:
             (w, h) = img.size
             if w <= settings.media_size[0] and h <= settings.media_size[1]:
                 shutil.copyfile(src, os.path.join(dest, name))
                 return
-
-        fmt = img.format
-
-        if fmt == 'GIF':
-            img.seek(0)
 
         img.thumbnail(size, Image.ANTIALIAS)
         img.save(os.path.join(dest, name), fmt, **img.info)
